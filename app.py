@@ -5,22 +5,30 @@ from datetime import datetime
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from urllib.parse import quote_plus
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 
 
 
-password = "Pskssp555"
-encoded_password = quote_plus(password)
-uri = f"mongodb+srv://mkrstic8_db_user:{encoded_password}@cluster0.pcrpliz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
+MONGO_USER = os.environ.get("MONGO_USER")
+MONGO_PASSWORD = os.environ.get("MONGO_PASSWORD")
+MONGO_CLUSTER = os.environ.get("MONGO_CLUSTER")
+MONGO_DB = os.environ.get("MONGO_DB")
+
+encoded_password = quote_plus(MONGO_PASSWORD)
+
+uri = f"mongodb+srv://{MONGO_USER}:{encoded_password}@{MONGO_CLUSTER}/?retryWrites=true&w=majority&appName=Cluster0"
 
         
 client = MongoClient(uri, server_api=ServerApi('1'))
 
 # Izaberi bazu i kolekciju
-db = client["db_ZIZ"]
+db = client[MONGO_DB]
 prisustvo = db["Prisustvo"]
 
 
