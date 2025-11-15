@@ -11,7 +11,9 @@ app = Flask(__name__)
 
 
 
-
+password = "Pskssp555"
+encoded_password = quote_plus(password)
+uri = f"mongodb+srv://mkrstic8_db_user:{encoded_password}@cluster0.pcrpliz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 
         
@@ -65,7 +67,26 @@ def unesi_fiksno():
     prisustvo.insert_one(dokument)
     return "<h2>✅ Fiksni unos uspešno dodat u kolekciju Prisustvo!</h2>"
 
+# MARK: 01 rest api
+#SETOVANJE RESTAPI 
+@app.route("/api/users", methods=["GET"])
+def get_users():
+    # Vrati sve dokumente iz Prisustvo kolekcije
+    docs = list(prisustvo.find({}, {"_id": 0}))  # izbacujemo Mongo _id
+    return jsonify(docs)
 
+#MARK: 02 DEEPFACE
+@app.route("/api/verify_face", methods=["POST"])
+def verify_face():
+    from deepface import DeepFace
+    DeepFace.stream(db_path='User\Database',anti_spoofing=True, enable_face_analysis=True)# strimuje u realnom vremenu
+    #dfs = DeepFace.find(img_path = "img1.jpg", db_path = 'User\Database') # pretraga slike
+
+    # objs = DeepFace.analyze(
+    #   img_path = 'img1.jpg', actions = ['age', 'gender', 'race', 'emotion']
+    # )
+
+# print (objs)
 # @app.route('/test-db')
 # def test_db():
 #     """Test MongoDB connection separately"""
